@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediaVault Dashboard</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #050816, #0f172a, #111827);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 60px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      background: linear-gradient(to right, #38bdf8, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #38bdf8;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 80px 60px;
+      gap: 50px;
+      flex-wrap: wrap;
+    }
+
+    .hero-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .hero-text h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .hero-text span {
+      background: linear-gradient(to right, #38bdf8, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-text p {
+      color: #cbd5e1;
+      line-height: 1.8;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s ease;
+      font-weight: bold;
+    }
+
+    .primary-btn {
+      background: linear-gradient(to right, #06b6d4, #3b82f6);
+      color: white;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(59,130,246,0.4);
+    }
+
+    .secondary-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+    }
+
+    .secondary-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .stats-card {
+      flex: 1;
+      min-width: 300px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 25px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .stats-card h2 {
+      margin-bottom: 30px;
+    }
+
+    .progress-box {
+      margin-bottom: 25px;
+    }
+
+    .progress-box div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .progress {
+      width: 100%;
+      height: 12px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: 10px;
+    }
+
+    .modules {
+      padding: 50px 60px;
+    }
+
+    .section-title {
+      margin-bottom: 40px;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: #94a3b8;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 25px;
+      padding: 30px;
+      transition: 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: rgba(59,130,246,0.2);
+      border-radius: 50%;
+      top: -80px;
+      right: -80px;
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card h4 {
+      color: #38bdf8;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card p {
+      color: #cbd5e1;
+      line-height: 1.7;
+      position: relative;
+      z-index: 2;
+    }
+
+    .analytics {
+      padding: 50px 60px;
+    }
+
+    .table-container {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 25px;
+      padding: 30px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 18px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    th {
+      color: #38bdf8;
+    }
+
+    tr:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 40px;
+      color: #94a3b8;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 40px;
+    }
+
+    .glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: rgba(59,130,246,0.2);
+      filter: blur(120px);
+      z-index: -1;
+    }
+
+    .glow1 {
+      top: 0;
+      left: 0;
+    }
+
+    .glow2 {
+      bottom: 0;
+      right: 0;
+      background: rgba(168,85,247,0.2);
+    }
+
+    /* LOGIN PAGE */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      backdrop-filter: blur(10px);
+    }
+
+    .login-box {
+      width: 350px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 40px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    .login-box h2 {
+      margin-bottom: 25px;
+      font-size: 2rem;
+      background: linear-gradient(to right, #38bdf8, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .login-box input::placeholder {
+      color: #cbd5e1;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(to right, #06b6d4, #3b82f6);
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .login-box button:hover {
+      transform: scale(1.03);
+    }
+
+    #loginMessage {
+      margin-top: 15px;
+      color: #f87171;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media(max-width: 768px) {
+      .navbar,
+      .hero,
+      .modules,
+      .analytics {
+        padding: 20px;
+      }
+
+      .hero-text h1 {
+        font-size: 2.8rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN MODAL -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+      <h2>MediaVault Login</h2>
+
+      <input type="text" id="username" placeholder="Enter Username">
+      <input type="password" id="password" placeholder="Enter Password">
+
+      <button onclick="loginUser()">Login</button>
+
+      <p id="loginMessage"></p>
+    </div>
+  </div>
+
+  <div class="glow glow1"></div>
+  <div class="glow glow2"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">MediaVault</div>
+
+    <div class="nav-links">
+      <a href="#modules">Modules</a>
+      <a href="#analytics">Analytics</a>
+      <a href="#footer">About</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>
+        Smart Streaming with <span>DSA Power</span>
+      </h1>
+
+      <p>
+        MediaVault is an advanced digital streaming and content management
+        platform using Trees, Graphs, Dynamic Programming, and Sorting
+        Algorithms for optimized content recommendation and analytics.
+      </p>
+
+      <div class="btn-group">
+        <button class="btn primary-btn" onclick="showMessage()">
+          Explore Dashboard
+        </button>
+
+        <button class="btn secondary-btn">
+          View Analytics
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-card">
+      <h2>Platform Statistics</h2>
+
+      <div class="progress-box">
+        <div>
+          <span>Total Media Content</span>
+          <span>12,540</span>
+        </div>
+
+        <div class="progress">
+          <span style="width:90%; background:linear-gradient(to right,#06b6d4,#3b82f6)"></span>
+        </div>
+      </div>
+
+      <div class="progress-box">
+        <div>
+          <span>Streaming Requests</span>
+          <span>8.7M</span>
+        </div>
+
+        <div class="progress">
+          <span style="width:80%; background:linear-gradient(to right,#8b5cf6,#ec4899)"></span>
+        </div>
+      </div>
+
+      <div class="progress-box">
+        <div>
+          <span>Recommendation Accuracy</span>
+          <span>96%</span>
+        </div>
+
+        <div class="progress">
+          <span style="width:96%; background:linear-gradient(to right,#22c55e,#10b981)"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODULES -->
+  <section class="modules" id="modules">
+
+    <div class="section-title">
+      <h2>DSA Modules</h2>
+      <p>Algorithms powering the MediaVault ecosystem.</p>
+    </div>
+
+    <div class="cards">
+
+      <div class="card">
+        <h3>Trees & Balanced Structures</h3>
+        <h4>BST • AVL Trees</h4>
+        <p>
+          Efficient indexing and balanced content storage for media catalogs.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Range Query Structures</h3>
+        <h4>Segment Tree • Fenwick Tree</h4>
+        <p>
+          Streaming analytics and cumulative statistics processing.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Recommendation Networks</h3>
+        <h4>Graphs • BFS • DFS</h4>
+        <p>
+          Discover connected content and recommendation clusters.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Shortest Path Optimization</h3>
+        <h4>Dijkstra • Floyd Warshall</h4>
+        <p>
+          Optimize recommendation paths and similarity searches.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Sorting & Ranking</h3>
+        <h4>Merge Sort • Heap Sort</h4>
+        <p>
+          Sort media libraries and rank trending content efficiently.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Greedy & Dynamic Programming</h3>
+        <h4>Knapsack • LIS</h4>
+        <p>
+          Resource allocation, caching, and engagement analysis.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MOVIES SECTION -->
+  <section class="modules" id="movies">
+
+    <div class="section-title">
+      <h2>Featured Movies & Genres</h2>
+      <p>Explore movies categorized by genres and recommendation analytics.</p>
+    </div>
+
+    <div class="cards" id="movieContainer">
+
+      <div class="card movie-card" data-genre="Sci-Fi">
+        <h3>Interstellar</h3>
+        <h4>Genre: Sci‑Fi</h4>
+        <p>
+          A space exploration masterpiece powered by AI recommendation systems.
+        </p>
+      </div>
+
+      <div class="card movie-card" data-genre="Action">
+        <h3>Avengers: Endgame</h3>
+        <h4>Genre: Action</h4>
+        <p>
+          One of the highest streamed action movies on MediaVault.
+        </p>
+      </div>
+
+      <div class="card movie-card" data-genre="Thriller">
+        <h3>Dark</h3>
+        <h4>Genre: Thriller</h4>
+        <p>
+          Mystery thriller with deep recommendation engagement trends.
+        </p>
+      </div>
+
+      <div class="card movie-card" data-genre="Fantasy">
+        <h3>Harry Potter</h3>
+        <h4>Genre: Fantasy</h4>
+        <p>
+          Fantasy content cluster connected through graph recommendations.
+        </p>
+      </div>
+
+      <div class="card movie-card" data-genre="Animation">
+        <h3>Spider‑Verse</h3>
+        <h4>Genre: Animation</h4>
+        <p>
+          Trending animated content sorted using popularity ranking systems.
+        </p>
+      </div>
+
+      <div class="card movie-card" data-genre="Drama">
+        <h3>Breaking Bad</h3>
+        <h4>Genre: Drama</h4>
+        <p>
+          Highly rated drama series recommended using shortest path algorithms.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GENRE FILTER -->
+  <section class="analytics">
+    <div class="section-title">
+      <h2>Genre Explorer</h2>
+      <p>Filter movies based on genres using JavaScript DOM filtering.</p>
+    </div>
+
+    <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:30px;">
+      <button class="btn primary-btn genre-btn" data-genre="All">All</button>
+      <button class="btn secondary-btn genre-btn" data-genre="Sci-Fi">Sci‑Fi</button>
+      <button class="btn secondary-btn genre-btn" data-genre="Action">Action</button>
+      <button class="btn secondary-btn genre-btn" data-genre="Thriller">Thriller</button>
+      <button class="btn secondary-btn genre-btn" data-genre="Fantasy">Fantasy</button>
+      <button class="btn secondary-btn genre-btn" data-genre="Animation">Animation</button>
+      <button class="btn secondary-btn genre-btn" data-genre="Drama">Drama</button>
+    </div>
+  </section>
+
+  <!-- WATCHLIST -->
+  <section class="analytics">
+
+    <div class="section-title">
+      <h2>User Watchlist</h2>
+      <p>Add movies dynamically using JavaScript arrays and DOM manipulation.</p>
+    </div>
+
+    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+      <input type="text" id="watchInput" placeholder="Enter Movie Name"
+      style="padding:14px; border:none; border-radius:12px; width:300px; background:rgba(255,255,255,0.08); color:white;">
+
+      <button class="btn primary-btn" onclick="addWatchlist()">
+        Add to Watchlist
+      </button>
+    </div>
+
+    <ul id="watchlist" style="list-style:none; display:flex; flex-direction:column; gap:15px;"></ul>
+  </section>
+
+  <!-- ANALYTICS -->
+  <section class="analytics" id="analytics">
+
+    <div class="section-title">
+      <h2>Trending Media Analytics</h2>
+      <p>Top ranked content using Heap Sort and recommendation systems.</p>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Movie</th>
+            <th>Rating</th>
+            <th>Views</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Interstellar</td>
+            <td>9.5 ⭐</td>
+            <td>2.3M</td>
+            <td>Trending</td>
+          </tr>
+
+          <tr>
+            <td>Inception</td>
+            <td>9.2 ⭐</td>
+            <td>1.8M</td>
+            <td>Popular</td>
+          </tr>
+
+          <tr>
+            <td>Avatar</td>
+            <td>8.9 ⭐</td>
+            <td>1.5M</td>
+            <td>Top Rated</td>
+          </tr>
+
+          <tr>
+            <td>Dark</td>
+            <td>9.0 ⭐</td>
+            <td>1.2M</td>
+            <td>Recommended</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="footer">
+    <h2>MediaVault Platform</h2>
+    <br>
+    <p>
+      Built using HTML, CSS, JavaScript, Java, and advanced Data Structures & Algorithms.
+    </p>
+  </footer>
+
+  <script>
+
+    // ================= LOGIN SYSTEM =================
+
+    function loginUser() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const message = document.getElementById('loginMessage');
+
+      if(username === 'admin' && password === '1234') {
+        document.getElementById('loginOverlay').classList.add('hidden');
+
+        localStorage.setItem('mediavaultUser', username);
+
+        showNotification('Login Successful!');
+      }
+      else {
+        message.innerText = 'Invalid Username or Password';
+      }
+    }
+
+    // ================= LOCAL STORAGE =================
+
+    window.onload = function() {
+      const savedUser = localStorage.getItem('mediavaultUser');
+
+      if(savedUser) {
+        document.getElementById('loginOverlay').classList.add('hidden');
+      }
+
+      updateClock();
+      setInterval(updateClock, 1000);
+    }
+
+    // ================= NOTIFICATION =================
+
+    function showNotification(text) {
+      const notification = document.createElement('div');
+
+      notification.innerText = text;
+      notification.style.position = 'fixed';
+      notification.style.top = '30px';
+      notification.style.right = '30px';
+      notification.style.padding = '15px 25px';
+      notification.style.background = '#22c55e';
+      notification.style.borderRadius = '12px';
+      notification.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
+      notification.style.zIndex = '3000';
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // ================= DIGITAL CLOCK =================
+
+    const clock = document.createElement('div');
+
+    clock.style.position = 'fixed';
+    clock.style.bottom = '20px';
+    clock.style.right = '20px';
+    clock.style.padding = '12px 20px';
+    clock.style.background = 'rgba(255,255,255,0.08)';
+    clock.style.border = '1px solid rgba(255,255,255,0.1)';
+    clock.style.borderRadius = '12px';
+    clock.style.backdropFilter = 'blur(10px)';
+    clock.style.fontWeight = 'bold';
+
+    document.body.appendChild(clock);
+
+    function updateClock() {
+      const now = new Date();
+      clock.innerHTML = now.toLocaleTimeString();
+    }
+
+    // ================= FILTER SEARCH =================
+
+    const searchBox = document.createElement('input');
+
+    searchBox.placeholder = 'Search DSA Modules...';
+    searchBox.style.width = '300px';
+    searchBox.style.padding = '14px';
+    searchBox.style.margin = '20px 60px';
+    searchBox.style.borderRadius = '12px';
+    searchBox.style.border = 'none';
+    searchBox.style.background = 'rgba(255,255,255,0.08)';
+    searchBox.style.color = 'white';
+
+    document.body.insertBefore(searchBox, document.querySelector('.modules'));
+
+    searchBox.addEventListener('keyup', () => {
+      const value = searchBox.value.toLowerCase();
+
+      document.querySelectorAll('.card').forEach(card => {
+        const text = card.innerText.toLowerCase();
+
+        if(text.includes(value)) {
+          card.style.display = 'block';
+        }
+        else {
+          card.style.display = 'none';
+        }
+      });
+    });
+
+    // ================= THEME TOGGLE =================
+
+    const themeBtn = document.createElement('button');
+
+    themeBtn.innerText = 'Toggle Theme';
+    themeBtn.className = 'btn secondary-btn';
+    themeBtn.style.position = 'fixed';
+    themeBtn.style.top = '90px';
+    themeBtn.style.right = '20px';
+    themeBtn.style.zIndex = '1000';
+
+    document.body.appendChild(themeBtn);
+
+    let darkMode = true;
+
+    themeBtn.addEventListener('click', () => {
+      if(darkMode) {
+        document.body.style.background = '#f8fafc';
+        document.body.style.color = '#111827';
+      }
+      else {
+        document.body.style.background = 'linear-gradient(135deg, #050816, #0f172a, #111827)';
+        document.body.style.color = 'white';
+      }
+
+      darkMode = !darkMode;
+    });
+    function showMessage() {
+      alert("Welcome to the MediaVault Dashboard!");
+    }
+
+    // ================= WATCHLIST =================
+
+    const watchlistArray = [];
+
+    function addWatchlist() {
+      const input = document.getElementById('watchInput');
+      const value = input.value.trim();
+
+      if(value === '') {
+        alert('Please enter a movie name');
+        return;
+      }
+
+      watchlistArray.push(value);
+
+      renderWatchlist();
+
+      input.value = '';
+    }
+
+    function renderWatchlist() {
+      const watchlist = document.getElementById('watchlist');
+
+      watchlist.innerHTML = '';
+
+      watchlistArray.forEach((movie, index) => {
+        const li = document.createElement('li');
+
+        li.style.padding = '16px';
+        li.style.borderRadius = '14px';
+        li.style.background = 'rgba(255,255,255,0.05)';
+        li.style.display = 'flex';
+        li.style.justifyContent = 'space-between';
+        li.style.alignItems = 'center';
+
+        li.innerHTML = `
+          <span>${movie}</span>
+          <button onclick="removeMovie(${index})"
+          style="padding:8px 14px; border:none; border-radius:10px; background:#ef4444; color:white; cursor:pointer;">
+            Remove
+          </button>
+        `;
+
+        watchlist.appendChild(li);
+      });
+    }
+
+    function removeMovie(index) {
+      watchlistArray.splice(index, 1);
+      renderWatchlist();
+    }
+
+    // ================= GENRE FILTER =================
+
+    const genreButtons = document.querySelectorAll('.genre-btn');
+    const movieCards = document.querySelectorAll('.movie-card');
+
+    genreButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const genre = button.dataset.genre;
+
+        movieCards.forEach(card => {
+          if(genre === 'All' || card.dataset.genre === genre) {
+            card.style.display = 'block';
+          }
+          else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // ================= RANDOM MOVIE RECOMMENDATION =================
+
+    const randomBtn = document.createElement('button');
+
+    randomBtn.innerText = 'Random Recommendation';
+    randomBtn.className = 'btn primary-btn';
+    randomBtn.style.position = 'fixed';
+    randomBtn.style.left = '20px';
+    randomBtn.style.bottom = '20px';
+    randomBtn.style.zIndex = '1000';
+
+    document.body.appendChild(randomBtn);
+
+    const movieRecommendations = [
+      'Interstellar',
+      'Inception',
+      'Dark',
+      'Breaking Bad',
+      'Spider‑Verse',
+      'Avatar',
+      'Harry Potter'
+    ];
+
+    randomBtn.addEventListener('click', () => {
+      const randomMovie = movieRecommendations[Math.floor(Math.random() * movieRecommendations.length)];
+
+      showNotification('Recommended: ' + randomMovie);
+    });
+
+    // Card animation effect
+    const cards = document.querySelectorAll('.card');
+
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(59,130,246,0.2), rgba(255,255,255,0.05))`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.background = 'rgba(255,255,255,0.05)';
+      });
+    });
+  </script>
+
+</body>
+</html>
